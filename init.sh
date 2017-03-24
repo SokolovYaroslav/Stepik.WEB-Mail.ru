@@ -11,4 +11,5 @@ sudo ln -sf /home/box/web/etc/guniconf-hello.py   /etc/gunicorn.d/guniconf_hello
 sudo ln -sf /home/box/web/etc/guniconf-django.py   /etc/gunicorn.d/guniconf_django
 sudo /etc/init.d/gunicorn restart
 sudo gunicorn -c /etc/gunicorn.d/guniconf_hello hello:wsgi_application
-sudo gunicorn -c /etc/gunicorn.d/guniconf_django wsgi:application
+cd ask/
+sudo gunicorn -c /etc/gunicorn.d/guniconf_django ask.wsgi:application
