@@ -7,7 +7,6 @@ sudo nano /usr/sbin/gunicorn-debian
 sudo nano /usr/bin/gunicorn
 sudo nano /usr/bin/gunicorn_django
 sudo nano /usr/bin/gunicorn_paster
-sudo /etc/init.d/gunicorn restart
 sudo gunicorn -c /home/box/web/etc/guniconf-hello.py hello:wsgi_application
 cd ask/
 sudo gunicorn -c /home/box/web/etc/guniconf-django.py ask.wsgi:application
