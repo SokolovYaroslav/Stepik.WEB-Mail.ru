@@ -11,7 +11,7 @@ def index(request):
         page = 1
     except TypeError:
         page = 1
-    questions = Question.objects.new()[:]
+    questions = Question.objects.new()
     paginator = Paginator(questions, 10)
     paginator.baseurl = '/?page='
     try:
