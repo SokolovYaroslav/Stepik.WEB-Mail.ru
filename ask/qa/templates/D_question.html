@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>{{question.title}}</title>
+</head>
+<body>
+  {{question.text}}<br>
+  {{question.author}}<br>
+  {{question.likes}}<br>
+  {{question.rating}}<br>
+  {% for a in answers %}
+  {{a.text}}<br>
+  {{a.author}}<br>
+  {% endfor %}
+</body>
+</html>

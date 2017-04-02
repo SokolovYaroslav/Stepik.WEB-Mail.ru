@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>{{title}}</title>
+</head>
+<body>
+  {% for q in questions %}
+  <h2>{{q.title}}</h2>
+  <p><a href="{% url 'TheQuestion' q.pk %}">Sosi</a></p>
+  {% endfor %}
+</body>
+<nav><ul class="pagination">
+ {% for p in paginator.page_range %}
+  {% if p == page.number %}
+  <li class="active">
+  {% else %}
+  <li>
+  {% endif %}
+   <a href = "{{paginator.baseurl}}{{p}}">
+     {{p}}</a>
+  </li>
+ {% endfor %}
+</ul></nav>
+</html>

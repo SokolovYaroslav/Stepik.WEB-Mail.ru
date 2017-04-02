@@ -20,7 +20,6 @@ def index(request):
         page = paginator.page(paginator.num_pages)
 
     return render(request, 'index.html', {
-    'title': 'Latests',
     'paginator': paginator,
     'questions': page.object_list,
     'page': page,
