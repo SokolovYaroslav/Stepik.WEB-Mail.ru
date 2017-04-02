@@ -17,5 +17,5 @@ from django.conf.urls import url
 from django.contrib import admin
 from qa import views
 urlpatterns = [
-    url(r'^[\d]+/', views.test)
+    url(r'^(?P<q_id>\d+)/', views.D_question, name = 'TheQuestion')
 ]
