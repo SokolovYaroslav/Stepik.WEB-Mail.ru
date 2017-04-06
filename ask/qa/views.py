@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.core.paginator import Paginator
 from qa.models import Question, Answer
 from django.http import HttpResponseRedirect, Http404
+from qa.forms import AskForm, AnswerForm
 
 def index(request):
     try:
@@ -31,8 +32,19 @@ def D_question(request, q_id):
         question = Question.objects.get(pk = q_id)
     except Question.DoesNotExist:
         raise Http404
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(question)
+            url = answer.question.get_url()
+            return HttpResponseRedirect(url)
+    else:
+        form = AnswerForm(initial = {
+        'question' : q_id
+        })
     answers = Question.objects.get_answers(question)[:]
     return render(request, 'D_question.html', {
+    'form': form,
     'question': question,
     'answers': answers,
     })
@@ -56,3 +68,13 @@ def popular(request):
     'questions': page.object_list,
     'page': page,
     })
+def question_add(request):
+    if request.method == 'POST':
+        form = AskForm(request.POST)
+        if form.is_valid():
+            question = form.save()
+            url = question.get_url()
+            return HttpResponseRedirect(url)
+    else:
+        form = AskForm()
+    return render(request,  'question_add.html', {'form': form})

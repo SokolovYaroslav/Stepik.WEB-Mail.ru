@@ -15,11 +15,13 @@ class Question(models.Model):
     text = models.TextField()
     added_at = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField(default = 0)
-    author = models.ForeignKey(User, related_name = 'author')
-    likes = models.ManyToManyField(User, related_name = 'like')
+    author = models.ForeignKey(User, related_name = 'author', default = 1)
+    likes = models.ManyToManyField(User, related_name = 'like', blank = True)
+    def get_url(self):
+        return '/question/' + str(self.pk)
 
 class Answer(models.Model):
     text = models.TextField()
     added_at = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User, default = 1)
