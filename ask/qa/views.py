@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from qa.models import Question, Answer
 from django.http import HttpResponseRedirect, Http404
-from qa.forms import AskForm, AnswerForm
+from qa.forms import AskForm, AnswerForm, SignUpForm, LoginForm
 
 def index(request):
     try:
@@ -32,22 +34,30 @@ def D_question(request, q_id):
         question = Question.objects.get(pk = q_id)
     except Question.DoesNotExist:
         raise Http404
-    if request.method == 'POST':
-        form = AnswerForm(request.POST)
-        if form.is_valid():
-            answer = form.save(question)
-            url = answer.question.get_url()
-            return HttpResponseRedirect(url)
-    else:
-        form = AnswerForm(initial = {
-        'question' : q_id
-        })
     answers = Question.objects.get_answers(question)[:]
-    return render(request, 'D_question.html', {
-    'form': form,
-    'question': question,
-    'answers': answers,
-    })
+    user = request.user
+    if user.is_authenticated():
+        if request.method == 'POST':
+            form = AnswerForm(request.POST)
+            form._user = request.user
+            if form.is_valid():
+                answer = form.save(question)
+                url = answer.question.get_url()
+                return HttpResponseRedirect(url)
+        else:
+            form = AnswerForm(initial = {
+            'question' : q_id
+            })
+        return render(request, 'D_question.html', {
+        'form': form,
+        'question': question,
+        'answers': answers,
+        })
+    else:
+        return render(request, 'D_question_anon.html', {
+        'question': question,
+        'answers': answers,
+        })
 def popular(request):
     try:
         page = int(request.GET.get('page'))
@@ -68,9 +78,11 @@ def popular(request):
     'questions': page.object_list,
     'page': page,
     })
+@login_required(login_url = '/login/')
 def question_add(request):
     if request.method == 'POST':
         form = AskForm(request.POST)
+        form._user = request.user
         if form.is_valid():
             question = form.save()
             url = question.get_url()
@@ -78,3 +90,24 @@ def question_add(request):
     else:
         form = AskForm()
     return render(request,  'question_add.html', {'form': form})
+def mySignup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request,  user)
+            return HttpResponseRedirect('/')
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form': form})
+def myLogin(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        form.is_valid()
+        user = form.save()
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
