@@ -78,18 +78,22 @@ def popular(request):
     'questions': page.object_list,
     'page': page,
     })
-@login_required(login_url = '/login/')
 def question_add(request):
-    if request.method == 'POST':
-        form = AskForm(request.POST)
-        form._user = request.user
-        if form.is_valid():
-            question = form.save()
-            url = question.get_url()
-            return HttpResponseRedirect(url)
+    user = request.user
+    if user.is_authenticated():
+        if request.method == 'POST':
+            form = AskForm(request.POST)
+            form._user = request.user
+            if form.is_valid():
+                question = form.save()
+                url = question.get_url()
+                return HttpResponseRedirect(url)
+        else:
+            form = AskForm()
+        return render(request,  'question_add.html', {'form': form})
     else:
-        form = AskForm()
-    return render(request,  'question_add.html', {'form': form})
+        form = LoginForm()
+        return render(request, 'login.html', {'form': form})
 def mySignup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
