@@ -10,15 +10,15 @@ class SignUpForm(forms.Form):
 
     def clean(self):
         username = self.cleaned_data['username']
-#        email = self.cleaned_data['email']
+        email = self.cleaned_data['email']
         user_name = User.objects.filter(username = username)[:]
-#        user_email = User.objects.filter(email = email)[:]
+        user_email = User.objects.filter(email = email)[:]
         if (len(user_name) != 0):
             raise forms.ValidationError(
             u'Пользователь с таким именем уже существует', code=1)
-#        if (len(user_email) != 0):
-#            raise forms.ValidationError(
-#            u'Пользователь с таким электронным адресом уже существует', code=2)
+        if (len(user_email) != 0):
+            raise forms.ValidationError(
+            u'Пользователь с таким электронным адресом уже существует', code=2)
 
     def save(self):
         user = User.objects.create_user(**self.cleaned_data)
